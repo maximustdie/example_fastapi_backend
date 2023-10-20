@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from api.http.routers import root_router as http_router
+from api.midleware.db_sessions import DBSessionMiddleware
 
 app = FastAPI(
     title="Example API",
@@ -17,6 +18,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(DBSessionMiddleware)
 
 app.include_router(http_router)
 
