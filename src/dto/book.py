@@ -1,9 +1,14 @@
-from pydantic import BaseModel
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict
 
 
-class BookInfo(BaseModel):
-    id: int
+class BookDTO(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
     title: str
 
-    class Config:
-        orm_mode = True
+
+class BookCreateDTO(BaseModel):
+    title: str
