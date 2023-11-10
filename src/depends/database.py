@@ -1,14 +1,16 @@
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session, create_async_engine, async_sessionmaker
 from contextvars import ContextVar
 
 from services.database.settings import settings
 
-db_session_context: ContextVar[int | None] = ContextVar("db_session_context", default=None)
+db_session_context: ContextVar[UUID | None] = ContextVar("db_session_context", default=None)
 
 engine = create_async_engine(settings.POSTGRES.build_url())
 
 
-def get_db_session_context() -> int:
+def get_db_session_context() -> UUID:
     session_id = db_session_context.get()
 
     if not session_id:
@@ -17,7 +19,7 @@ def get_db_session_context() -> int:
     return session_id
 
 
-def set_db_session_context(session_id: int | None) -> None:
+def set_db_session_context(session_id: UUID | None) -> None:
     db_session_context.set(session_id)
 
 
