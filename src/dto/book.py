@@ -8,7 +8,11 @@ class BookDTO(BaseModel):
 
     id: UUID
     title: str
+    author: str
+    description: str | None = None
 
 
 class BookCreateDTO(BaseModel):
     title: str
+    author: str
+    description: str | None = None
