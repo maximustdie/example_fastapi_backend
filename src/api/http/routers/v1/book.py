@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from abstractions.decorators.transactional import transactional
+from api.http.schemas.response_scheme import PaginatedResponse
 from depends.database import get_current_session
 from dto.book import BookCreateDTO, BookDTO
 from services.database.models import BookModel
@@ -20,10 +21,12 @@ async def create_book(data: BookCreateDTO, session: AsyncSession = Depends(get_c
     return BookDTO.model_validate(book)
 
 
-@router.get("/books")
+@router.get("/books", response_model=PaginatedResponse[BookDTO])
 @transactional
-async def get_all_books_pagination_limit_offset(session: AsyncSession = Depends(get_current_session)):
-    stmt = select(BookModel)
+async def get_all_books_pagination_limit_offset(
+    limit: int = Query(100, ge=0), offset: int = Query(0, ge=0), session: AsyncSession = Depends(get_current_session)
+):
+    stmt = select(BookModel).limit(limit).offset(offset)
     result = (await session.execute(stmt)).scalars().all()
-    return [BookDTO(**book.as_dict()) for book in result]
-
+    books = [BookDTO(**book.as_dict()) for book in result]
+    return {"count": len(books), "items": books}
