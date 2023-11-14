@@ -1,10 +1,16 @@
 from fastapi import APIRouter, Depends
 from fastapi import status
+from fastapi_filter import FilterDepends
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from abstractions.decorators.transactional import transactional
-from dto.author import AuthorCreateDTO
+from api.http.filters.author import AuthorFilter
+from depends.database import get_current_session
+from dto.author import AuthorCreateDTO, AuthorDTO
 from services.authors.author_service import AuthorService
 from services.authors.factory import create_author_service
+from services.database.models import AuthorModel
 
 router = APIRouter(tags=["authors"])
 
@@ -14,3 +20,12 @@ router = APIRouter(tags=["authors"])
 async def create_author(data: AuthorCreateDTO, autor_service: AuthorService = Depends(create_author_service)):
     autor = await autor_service.create_author(data)
     return autor
+
+
+@router.get(path="/authors", response_model=list[AuthorDTO])
+@transactional
+async def get_author(
+    author_filter: AuthorFilter = FilterDepends(AuthorFilter),
+    autor_service: AuthorService = Depends(create_author_service),
+):
+    return await autor_service.get_authors(filters=author_filter)

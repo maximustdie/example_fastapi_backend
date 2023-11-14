@@ -1,3 +1,6 @@
+from fastapi_filter.contrib.sqlalchemy import Filter
+
+from api.http.filters.author import AuthorFilter
 from dto.author import AuthorCreateDTO, AuthorDTO
 from services.database.repositories.author import AuthorRepository
 
@@ -7,5 +10,7 @@ class AuthorService:
         self.author_repository = author_repository
 
     async def create_author(self, author: AuthorCreateDTO):
-        result: dict = await self.author_repository.create(**author.model_dump())
-        return AuthorDTO(**result)
+        return await self.author_repository.create(author)
+
+    async def get_authors(self, filters: Filter | None):
+        return await self.author_repository.get_all(filters=filters)
