@@ -1,7 +1,6 @@
 from fastapi_filter.contrib.sqlalchemy import Filter
 from sqlalchemy import select
 
-from api.http.filters.author import AuthorFilter
 from dto.author import AuthorDTO, AuthorCreateDTO
 from services.database.models import AuthorModel
 from services.database.repositories.base import BaseRepository
