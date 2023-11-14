@@ -12,6 +12,5 @@ class AuthorDTO(BaseModel):
 
 
 class AuthorCreateDTO(BaseModel):
-    author_id: UUID
     first_name: str
     last_name: str
