@@ -9,8 +9,8 @@ from services.database.models import BookModel
 from services.database.repositories.base import SqlalchemyBaseRepository
 
 
-class AuthorRepository(SqlalchemyBaseRepository, AbstractionBookRepository):
-
+# TODO: Как должен наследоваться репозиторий?
+class BookRepository(SqlalchemyBaseRepository, AbstractionBookRepository):
     def __init__(self, query_model, session_or_factory):
         super().__init__(session_or_factory, query_model)
 
